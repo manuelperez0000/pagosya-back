@@ -7,8 +7,11 @@ import { findUserByEmail } from './store/controller.js'
 const router = express.Router()
 
 router.post('/', async (req, res) => {
+
+    const { email, password } = req.body
+    return responser.success({ res, status: 200, message: "Hola neptuno " + email + "variable: " + process.env.JWT_SECRET })
+
     try {
-        const { email, password } = req.body
 
         const user = await findUserByEmail(email)
         if (!user) {
