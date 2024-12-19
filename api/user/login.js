@@ -8,10 +8,11 @@ const router = express.Router()
 
 router.post('/', async (req, res) => {
 
-    const { email, password } = req.body
-    return responser.success({ res, status: 200, message: "Hola neptuno " + email + "variable: " + process.env.JWT_SECRET })
-
     try {
+        const { email, password } = req.body
+        /* 
+        return responser.success({ res, status: 200, message: "Hola neptuno " + email + "variable: " + process.env.JWT_SECRET })
+        */
 
         const user = await findUserByEmail(email)
         if (!user) {
@@ -27,7 +28,7 @@ router.post('/', async (req, res) => {
         // Si la contraseña es correcta, generamos un token JWT
         const token = jwt.sign(
             { _id: user._id, name: user.name, email: user.email },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET
             { expiresIn: '10h' }
         )
 
