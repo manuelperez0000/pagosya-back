@@ -1,9 +1,23 @@
 import express from 'express'
 import responser from '../../network/response.js'
-import { findUserByEmail, findUserById } from './store/controller.js'
+import { findUserByEmail, findUserById, findContacts } from './store/controller.js'
 import { isMongoId, isEmail } from '../../services/dataType.js'
+import validateToken from '../../midelwares/validateToken.js'
 
 const router = express.Router()
+
+router.get('/', validateToken, async (req, res) => {
+    try {
+        /* console.log(req.user) */
+        const user = await findUserById(req.user._id)
+
+        const contacts = await findContacts(user?.email)
+
+        responser.success({ res, message: "Success", body: { user, token: req.token, contacts } })
+    } catch (error) {
+        responser.error({ res, message: error?.message || error })
+    }
+})
 
 router.get('/:emailOrId', async (req, res) => {
     try {

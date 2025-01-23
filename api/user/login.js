@@ -2,17 +2,15 @@ import express from 'express'
 import responser from '../../network/response.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { findUserByEmail } from './store/controller.js'
+import { findUserByEmail, findContacts } from './store/controller.js'
 
 const router = express.Router()
 
 router.post('/', async (req, res) => {
 
     try {
+
         const { email, password } = req.body
-        /* 
-        return responser.success({ res, status: 200, message: "Hola neptuno " + email + "variable: " + process.env.JWT_SECRET })
-        */
 
         const user = await findUserByEmail(email)
         if (!user) {
@@ -29,12 +27,12 @@ router.post('/', async (req, res) => {
         const token = jwt.sign(
             { _id: user._id, name: user.name, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: '10h' }
+            { expiresIn: '100h' }
         )
 
-        user.password = undefined
+        const contacts = await findContacts(user?.email)
 
-        responser.success({ res, message: "Success", body: { user, token } })
+        responser.success({ res, message: "Success", body: { user, token, contacts } })
 
     } catch (error) {
         responser.error({ res, message: error?.message || error })

@@ -1,12 +1,12 @@
-const success = ({ res, message = 'success', body }) => {
-    res.status(200).json({
+const success = ({ res, message = 'success', body = {}, status = 200 }) => {
+    res.status(status).json({
         body,
         message,
         status: 200
     })
 }
 
-const error = ({ res, message="Error desconocido", body={}, status = 500 }) => {
+const error = ({ res, message = "Error desconocido", body = {}, status = 500 }) => {
     res.status(status).json({
         body,
         message,
