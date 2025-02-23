@@ -1,15 +1,13 @@
 import express from 'express'
-/* import router from './router.js'
-import dbConnect from './db/conection.js' */
-/* import morgan from 'morgan'
-import 'dotenv/config'; */
-/* import cors from 'cors' */
+/* import router from './router.js' */
+import dbConnect from './db/conection.js'
+import 'dotenv/config';
+import cors from 'cors'
 
 const PORT = process.env.PORT || 3000
 const app = express()
 app.use(express.json())
 
-/* app.use(morgan('dev')) */
 /* 
 app.use(cors()) */
 /* dbConnect() */
