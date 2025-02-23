@@ -10,7 +10,6 @@ import paymentMethods from './api/methods/methods.js'
 const route = express.Router()
 
 const router = (app) => {
-
     app.use(cors())
     app.use('/api/v1', route)
     route.use('/user/login', login)
@@ -19,8 +18,6 @@ const router = (app) => {
     route.use('/enviar', enviar)
     route.use('/transactions', transactions)
     route.use('/paymentMethods', paymentMethods)
-
-
 }
 
 export default router
