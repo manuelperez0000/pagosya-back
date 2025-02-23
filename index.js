@@ -9,14 +9,14 @@ const PORT = process.env.PORT || 3000
 const app = express()
 app.use(express.json())
 
-app.use(morgan('dev'))
-
-app.use(cors())
-dbConnect()
+/* app.use(morgan('dev')) */
+/* 
+app.use(cors()) */
+/* dbConnect() */
 
 app.get('/', (req, res) => { res.send('Welcom to PagosYa') })
 
-router(app)
+/* router(app) */
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`)
