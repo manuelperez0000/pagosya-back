@@ -21,6 +21,10 @@ const router = (app) => {
     route.use('/enviar', enviar)
     route.use('/transactions', transactions)
     route.use('/paymentMethods', paymentMethods) */
+    
+    /* route.use('*', (req, res)=>{ 
+        responser.error({ res, message: error?.message || error })
+     }) */
 }
 
 export default router
