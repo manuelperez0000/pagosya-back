@@ -12,13 +12,13 @@ const route = express.Router()
 const router = (app) => {
     
     app.use(cors())
-    app.use('/api/v1', route)
+    /* app.use('/api/v1', route)
     route.use('/user/login', login)
     route.use('/user/register', register)
     route.use('/user/getUser', getUser)
     route.use('/enviar', enviar)
     route.use('/transactions', transactions)
-    route.use('/paymentMethods', paymentMethods)
+    route.use('/paymentMethods', paymentMethods) */
 }
 
 export default router

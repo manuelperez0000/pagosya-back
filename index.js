@@ -8,15 +8,15 @@ const PORT = process.env.PORT || 3000
 const app = express()
 app.use(express.json())
 
-/* 
-app.use(cors()) */
-/* dbConnect() */
+app.use(cors())
+
+dbConnect()
 
 app.get('/', (req, res) => { res.send('Welcom to PagosYa') })
 
-/* router(app) */
+router(app)
 
 app.listen(PORT, () => {
-  /* console.log(`Servidor corriendo en http://localhost:${PORT}`) */
-  console.log("servidor corriendo")
+  console.log(`Servidor corriendo en http://localhost:${PORT}`)
+  /* console.log("servidor corriendo") */
 });
