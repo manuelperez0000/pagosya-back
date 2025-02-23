@@ -1,5 +1,5 @@
 import express from 'express'
-/* import router from './router.js' */
+import router from './router.js'
 import dbConnect from './db/conection.js'
 import 'dotenv/config';
 import cors from 'cors'
