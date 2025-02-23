@@ -3,7 +3,7 @@ import router from './router.js'
 import dbConnect from './db/conection.js'
 import morgan from 'morgan'
 import 'dotenv/config';
- import cors from 'cors'
+import cors from 'cors'
 
 const PORT = process.env.PORT || 3000
 const app = express()
