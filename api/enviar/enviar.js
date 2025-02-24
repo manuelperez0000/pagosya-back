@@ -4,7 +4,7 @@ import validateToken from '../../midelwares/validateToken.js'
 import { enviar, confirm, saveContact } from './controller.js'
 
 
-/* import { saveTransaction } from '../transactions/transactionController.js' */
+import { saveTransaction } from '../transactions/transactionController.js' //el problema
 import { getUserIdFromEmail } from '../user/store/controller.js'
 
 
@@ -12,7 +12,7 @@ const router = express.Router()
 
 router.post('/', validateToken, async (req, res) => {
     try {
-        /* const { to, amount, checked } = req.body
+        const { to, amount, checked } = req.body
 
         const from = req.user.email
 
@@ -20,7 +20,7 @@ router.post('/', validateToken, async (req, res) => {
         const fromId = await getUserIdFromEmail({ email: from })
         const toId = await getUserIdFromEmail({ email: to })
 
-        saveTransaction({
+        await saveTransaction({
             fromId, toId, fromEmail:from, toEmail:to, amount
         })
 
@@ -30,7 +30,7 @@ router.post('/', validateToken, async (req, res) => {
             responser.success({ res, message: "Enviado con exito", body: { from, to, amount, info: response, status: true } })
         } else {
             throw 'Error al realizar el envio'
-        } */
+        }
 
         responser.success({ res, message: "Enviado con exito", body: {} })
     } catch (error) {
@@ -41,22 +41,22 @@ router.post('/', validateToken, async (req, res) => {
 router.post('/confirm', validateToken, async (req, res) => {
 
     try {
-        /* 
-    
-            const { to, amount } = req.body
-    
-            const from = req.user.email
-    
-            const response = await confirm({ from, to, amount })
-    
-            const { message } = response
-    
-            if (response.confirm) {
-                responser.success({ res, message, body: response })
-            } else {
-                responser.error({ res, message, status: 400, body: response })
-            }
-     */
+
+
+        const { to, amount } = req.body
+
+        const from = req.user.email
+
+        const response = await confirm({ from, to, amount })
+
+        const { message } = response
+
+        if (response.confirm) {
+            responser.success({ res, message, body: response })
+        } else {
+            responser.error({ res, message, status: 400, body: response })
+        }
+
 
         responser.success({ res, message: "", body: {} })
     } catch (error) {
