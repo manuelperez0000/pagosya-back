@@ -5,7 +5,7 @@ import login from './api/user/login.js'
 import register from './api/user/register.js' */
 /* import paymentMethods from './api/methods/methods.js'  */
 /* import enviar from './api/enviar/enviar.js' */
-/* import transactions from './api/transactions/transactions.js' */
+import transactions from './api/transactions/transactions.js'
 
 const route = express.Router()
 
