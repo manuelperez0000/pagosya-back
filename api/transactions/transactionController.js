@@ -1,4 +1,4 @@
-/* import TransactionModel from "./transactionModel.js" */
+import TransactionModel from "./transactionModel.js"
 
 export const saveTransaction = async ({ fromId, toId, fromEmail, toEmail, amount }) => {
 
