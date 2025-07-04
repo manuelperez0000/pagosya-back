@@ -2,7 +2,7 @@ import express from 'express'
 import responser from '../../network/response.js'
 import validateToken from '../../midelwares/validateToken.js'
 import { enviar, confirm, saveContact } from './controller.js'
-
+import validate from '../../services/validate.js'
 
 import { saveTransaction } from '../transactions/transactionController.js' //el problema
 import { getUserIdFromEmail } from '../user/store/controller.js'
@@ -21,7 +21,7 @@ router.post('/', validateToken, async (req, res) => {
         const toId = await getUserIdFromEmail({ email: to })
 
         await saveTransaction({
-            fromId, toId, fromEmail:from, toEmail:to, amount
+            fromId, toId, fromEmail: from, toEmail: to, amount
         })
 
         if (checked) saveContact(to, from)
@@ -32,7 +32,6 @@ router.post('/', validateToken, async (req, res) => {
             throw 'Error al realizar el envio'
         }
 
-        responser.success({ res, message: "Enviado con exito", body: {} })
     } catch (error) {
         responser.error({ res, message: error?.message || error })
     }
@@ -41,9 +40,11 @@ router.post('/', validateToken, async (req, res) => {
 router.post('/confirm', validateToken, async (req, res) => {
 
     try {
-
-
         const { to, amount } = req.body
+
+        validate.required([to,amount])
+        validate.number(amount,"Monto invalido")
+        validate.email(to,"formato de correo invalido")
 
         const from = req.user.email
 
@@ -53,12 +54,12 @@ router.post('/confirm', validateToken, async (req, res) => {
 
         if (response.confirm) {
             responser.success({ res, message, body: response })
+            return
         } else {
-            responser.error({ res, message, status: 400, body: response })
+            responser.error({ res, message, status:400, body: response })
+            return
         }
 
-
-        responser.success({ res, message: "", body: {} })
     } catch (error) {
         responser.error({ res, message: error?.message || error })
     }

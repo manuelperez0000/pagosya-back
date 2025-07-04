@@ -10,6 +10,10 @@ export const saveContact = async (email, from) => {
     }
 }
 
+export const deleteContac = async ({contactId}) =>{
+
+}
+
 
 export const enviar = async ({ from, to, amount }) => {
 
@@ -28,19 +32,23 @@ export const confirm = async ({ from, to, amount }) => {
     4 ./ balance invalido */
 
 
-    //obtener el from
-    const userFrom = await User.findOne({ email: from })
-    if (!userFrom) return { confirm: false, error: 1, message: "Remitente " + from + " no existe" }
-    //obtener el to
-    const userTo = await User.findOne({ email: to })
-    if (!userTo) return { confirm: false, error: 2, message: "Receptor no existe" }
+        //obtener el from
+        const userFrom = await User.findOne({ email: from })
+        if (!userFrom) return { confirm: false, error: 1, message: "Emisor " + from + " no existe" }
 
-    //el balance del from debe ser superior o igual a amount
-    if (userFrom.balance < amount) return { confirm: false, error: 3, message: "Saldo insuficiente" }
+        //obtener el to
+        const userTo = await User.findOne({ email: to })
+        if (!userTo) return { confirm: false, error: 2, message: "Receptor no existe" }
 
-    if (amount <= 0) return { confirm: false, error: 4, message: "Monto invalido" }
+        //el balance del from debe ser superior o igual a amount
+        if (userFrom.balance < amount) return { confirm: false, error: 3, message: "Saldo insuficiente" }
 
-    if (from === to) return { confirm: false, error: 5, message: "Correo invalido" }
+        if (amount <= 0) return { confirm: false, error: 4, message: "Monto invalido" }
 
-    return { confirm: true, error: 0, message: "Confirmado con exito", userFrom, userTo, amount }
+        if (from === to) return { confirm: false, error: 5, message: "Correo invalido" }
+        
+
+        return { confirm: true, error: 0, message: "Confirmado con exito", userFrom, userTo, amount }
+ 
+
 }
