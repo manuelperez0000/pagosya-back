@@ -8,8 +8,8 @@ const router = express.Router()
 
 router.post('/', async (req, res) => {
 
-    try {
 
+    try {
         const { email, password } = req.body
 
         const user = await findUserByEmail(email)
@@ -33,6 +33,8 @@ router.post('/', async (req, res) => {
         const contacts = await findContacts(user?.email)
 
         responser.success({ res, message: "Success", body: { user, token, contacts } })
+
+
 
     } catch (error) {
         responser.error({ res, message: error?.message || error })

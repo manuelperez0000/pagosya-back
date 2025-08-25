@@ -1,5 +1,6 @@
 import User from './model.js'
 import Contacts from '../../enviar/contactsModel.js'
+import PaymentMethod from '../../methods/methodsModel.js'
 
 export const saveUser = async (userData) => {
     try {
@@ -28,5 +29,10 @@ export const findContacts = async (email) => {
 
 export const getUserIdFromEmail = async ({ email }) => {
     const response = await User.findOne({ email })
+    return response
+}
+
+export const findPaymentMethods = async (userId) => {
+    const response = await PaymentMethod.find({ userId })
     return response
 }

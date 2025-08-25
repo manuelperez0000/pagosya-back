@@ -2,8 +2,8 @@ import mongoose from 'mongoose'
 const { Schema } = mongoose
 
 const depositSchema = new Schema({
-    from: { type: Schema.Types.ObjectId, required: true },
-    to: { type: Schema.Types.ObjectId, required: false },
+    userFrom: { type: Schema.Types.ObjectId, required: true },
+    userTo: { type: Schema.Types.ObjectId, required: false },
     fromCurrency: { type: Schema.Types.ObjectId, required: true },
     toCurrency: { type: Schema.Types.ObjectId, required: true },
     amountFrom: { type: Number, required: true },

@@ -1,6 +1,6 @@
 import express from 'express'
 import responser from '../../network/response.js'
-import { findUserByEmail, findUserById, findContacts } from './store/controller.js'
+import { findUserByEmail, findUserById, findContacts, findPaymentMethods } from './store/controller.js'
 import { isMongoId, isEmail } from '../../services/dataType.js'
 import validateToken from '../../midelwares/validateToken.js'
 
@@ -13,7 +13,9 @@ router.get('/', validateToken, async (req, res) => {
 
         const contacts = await findContacts(user?.email)
 
-        responser.success({ res, message: "Success", body: { user, token: req.token, contacts } })
+        const methods = await findPaymentMethods(user?._id)
+
+        responser.success({ res, message: "Success", body: { user, token: req.token, contacts, methods } })
     } catch (error) {
         responser.error({ res, message: error?.message || error })
     }

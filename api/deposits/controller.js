@@ -1,15 +1,30 @@
 import Deposit from './depositModel.js';
-
-export default async function saveDeposit(deposit) {
+import validate from '../../services/validate.js';
+const saveDeposit = async (deposit) => {
     try {
+
         // Validate the deposit object
-        if (!deposit.from || !deposit.fromCurrency || !deposit.toCurrency || !deposit.amountFrom || !deposit.amountTo) {
-            throw new Error('Faltaron algunos datos en tu transaccion');
-        }
+       
+        validate.required(deposit.userFrom,'Falta el campo "userFrom" en tu transacción')
+        validate.isMongoId(deposit.userFrom,'from no es un id valido para mongodb')
+
+        validate.required(deposit.fromCurrency,'Falta el campo "fromCurrency" en tu transacción')
+        validate.isMongoId(deposit.fromCurrency)
+
+        validate.required(deposit.toCurrency,'Falta el campo "toCurrency" en tu transacción')
+        validate.isMongoId(deposit.toCurrency)
+
+        validate.required(deposit.amountFrom,'amountFrom es requerido')
+        validate.number(deposit.amountFrom)
+
+        validate.required(deposit.amountTo,'amountTo es requerido')
+        validate.number(deposit.amountTo)
+
         const newDeposit = new Deposit(deposit);
-        await newDeposit.save();
-        return newDeposit;
+        return await newDeposit.save();
     } catch (error) {
-        throw new Error(`Error saving deposit: ${error.message}`);
+        throw new Error(`Error al guardar el deposito: ${error.message}`);
     }
 }
+
+export default { saveDeposit }
