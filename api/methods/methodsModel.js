@@ -19,25 +19,10 @@ const PaymentMethodSchema = new mongoose.Schema({
     trim: true,
     maxlength: 20,
   },
-  exchangeRateToUSD: {
-    type: Number,
-    required: true,
-    min: 0, // No puede ser negativo
-  },
   accountType: {
     type: String,
-    required: true,
+    required: false,
     enum: ['ahorro', 'corriente'],
-  },
-  buyPrice: {
-    type: Number,
-    required: true,
-    min: 0, // No puede ser negativo
-  },
-  sellPrice: {
-    type: Number,
-    required: true,
-    min: 0, // No puede ser negativo
   },
   userId: {
     type: Schema.Types.ObjectId,
@@ -51,7 +36,7 @@ const PaymentMethodSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  acountNumber: {
+  accountNumber: {
     type: String,
     required: false
   },
@@ -67,7 +52,7 @@ const PaymentMethodSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  metodo: {
+  methodId: {
     type: Number,
     required: true
   }

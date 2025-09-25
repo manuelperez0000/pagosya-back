@@ -22,7 +22,6 @@ router.post('/', validateToken, async (req, res) => {
             buyPrice,
             sellPrice,
             userId } = req.body
-            console.log(req.body);
 
         // Validar que buyPrice sea menor o igual a sellPrice
         /* if (buyPrice > sellPrice) {

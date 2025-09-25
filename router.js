@@ -9,6 +9,10 @@ import deposit from './api/deposits/deposits.js'
 import enviar from './api/enviar/enviar.js' //el problema
 import perfil from './api/perfil/perfil.js'
 import response from './network/response.js'
+import tasas from './api/tasas/tasas.js'
+import users from './api/user/users.js'
+import adminMethods from './api/adminMethods/adminMethods.js'
+import chats from './api/chats/chats.js'
 
 const route = express.Router();
 
@@ -26,6 +30,11 @@ const router = (app) => {
     route.use('/paymentMethods', paymentMethods);
     route.use('/deposit', deposit);
     route.use('/perfil', perfil);
+
+    route.use('/tasas', tasas);
+    route.use('/users', users);
+    route.use('/adminMethods', adminMethods);
+    route.use('/chats', chats);
 
     route.use('*', (_, res) => response.error({ res, message: '404 Not Found' }));
 }

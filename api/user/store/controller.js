@@ -36,3 +36,17 @@ export const findPaymentMethods = async (userId) => {
     const response = await PaymentMethod.find({ userId })
     return response
 }
+
+export const findAllUsers = async () => {
+    const response = await User.find()
+    return response
+}
+
+export const changeUserLevel = async ({ level, _id }) => {
+    try {
+        const user = await User.findByIdAndUpdate(_id, { level }, { new: true });
+        return user;
+    } catch (error) {
+        return error;
+    }
+}

@@ -14,7 +14,6 @@ const validateToken = (req, res, next) => {
                 req.user = decoded
                 req.token = token
 
-                console.log(decoded)
                 next()
                 /* if (req.user.user.block === true) {
                     throw 'Su cuenta a sido bloqueada, por favor comunicarse con su administrador'
