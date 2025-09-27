@@ -57,7 +57,7 @@ const PaymentMethodSchema = new mongoose.Schema({
     required: true
   }
 }, {
-  timestamps: true, // Incluye createdAt y updatedAt
+  timestamps: true,
 });
 
 const PaymentMethod = mongoose.model('PaymentMethod', PaymentMethodSchema);

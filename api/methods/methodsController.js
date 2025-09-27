@@ -4,9 +4,6 @@ export const savePaymentMethod = async ({
     currencyName,
     currencyType,
     abbreviation,
-    exchangeRateToUSD,
-    buyPrice,
-    sellPrice,
     userName,
     phone,
     acountNumber,
@@ -16,17 +13,10 @@ export const savePaymentMethod = async ({
     methodId,
     userId
 }) => {
-    // Aquí puedes agregar la lógica para validar los datos antes de guardarlos
-    /* if (buyPrice > sellPrice) {
-        throw new Error('El precio de compra no puede ser mayor que el precio de venta.')
-    } */
 
     validate.string(currencyName,"Falta el nombre o no es un string")
     validate.string(currencyType,"Falta el tipo de moneda o no es un string")
     validate.string(abbreviation,"Falta la abreviatura o no es un string")
-    validate.number(exchangeRateToUSD,"El tipo de cambio a USD no es un número")
-    validate.number(buyPrice,"El precio de compra no es un número")
-    validate.number(sellPrice,"El precio de venta no es un número")
 
     const newPaymentMethod = new PaymentMethod({
         currencyName,
@@ -38,15 +28,22 @@ export const savePaymentMethod = async ({
         document,
         bank,
         email,
-        metodo,
-        exchangeRateToUSD,
-        buyPrice,
-        sellPrice,
+        methodId,
         userId
     })
 
-    await newPaymentMethod.save()
+    const responseDb = await newPaymentMethod.save()
 
-    return newPaymentMethod
+    return responseDb
 }
 
+export const getMethodsById = async (userId)=>{
+    const response = await PaymentMethod.find({userId})
+    return response
+}
+
+export const deleteMethod = async (id) => {
+    const response = await PaymentMethod.findByIdAndDelete(id)
+    console.log("delete: ",response)
+    return response
+}

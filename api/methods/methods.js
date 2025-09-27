@@ -1,52 +1,57 @@
 import express from 'express'
 import responser from '../../network/response.js'
 import validateToken from '../../midelwares/validateToken.js'
-import { savePaymentMethod } from './methodsController.js';
+import { savePaymentMethod, getMethodsById, deleteMethod } from './methodsController.js';
 import onlySuperAdmin from '../../midelwares/onlySuperAdmin.js'
 
 const router = express.Router()
 
-router.post('/', validateToken, async (req, res) => {
+router.delete('/:methodId', validateToken, async (req, res) => {
     try {
-        const { currencyName,
-            currencyType,
-            abbreviation,
-            userName,
-            phone,
-            acountNumber,
-            document,
-            bank,
-            email,
-            metodo,
-            exchangeRateToUSD,
-            buyPrice,
-            sellPrice,
-            userId } = req.body
+        const methodId = req.params.methodId
+        console.log(methodId)
+        const response = await deleteMethod(methodId)
+        responser.success({ res, message: "Deleted successfully", body: response })
+    } catch (error) {
+        responser.error({ res, message: error?.message || error })
+    }
+})
 
-        // Validar que buyPrice sea menor o igual a sellPrice
-        /* if (buyPrice > sellPrice) {
-            responser.error({ res, message: 'El precio de compra no puede ser mayor que el precio de venta.' })
-        } */
+router.get('/:userId', validateToken, async (req, res) => {
+    const userId = req.params.userId
+    try {
+        const response = await getMethodsById(userId)
+        responser.success({ res, message: "success getting user methods", body: response })
+    } catch (error) {
+        responser.error({ res, message: error?.message || error })
+    }
+})
 
-        // Crear un nuevo método de pago
-        /* const savedPaymentMethod = await savePaymentMethod({
-            currencyName,
-            currencyType,
-            abbreviation,
-            userName,
-            phone,
-            acountNumber,
-            document,
-            bank,
-            email,
-            metodo,
-            exchangeRateToUSD,
-            buyPrice,
-            sellPrice,
+router.post('/', validateToken, async (req, res) => {
+
+    try {
+        const method = req.body.methodId
+        const reqBody = req.body
+
+        const objToSave = {
+            currencyName: method.currencyName,
+            currencyType: method.currencyType,
+            abbreviation: method.abbreviation,
             userId: req.user._id,
-        })
+            methodId: method.methodId,
+            email: reqBody.email,
+            phone: reqBody.phone,
+            accountNumber: reqBody.accountNumber,
+            document: reqBody.document,
+            bank: reqBody.bank,
+            userName: reqBody.nombre,
+            accountType: reqBody.tipoCuenta
+        }
 
-        responser.success({ res, message: "Success", body: savedPaymentMethod }) */
+        console.log("objToSave: ", objToSave)
+        const savedPaymentMethod = await savePaymentMethod(objToSave)
+
+        responser.success({ res, message: "Success", body: savedPaymentMethod })
 
     } catch (error) {
         responser.error({ res, message: error?.message || error })
@@ -77,9 +82,6 @@ router.post('/save', validateToken, async (req, res) => {
     try {
         console.log(req.body);
         const body = req.body
-
-
-
         responser.success({ res, message: "Success", body: req.body })
     } catch (error) {
         responser.error({ res, message: error?.message || error })

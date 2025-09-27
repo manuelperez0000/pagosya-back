@@ -4,6 +4,8 @@ import 'dotenv/config';
 import cors from 'cors'
 import router from './router.js'
 import morgan from 'morgan';
+import { Server } from 'socket.io';
+
 
 const PORT = process.env.PORT || 3000
 const app = express()
