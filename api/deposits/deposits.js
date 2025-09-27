@@ -45,12 +45,11 @@ router.put('/attend/:id', validateToken, async (req, res) => {
         if (!deposit) {
             return responser.error({ res, message: "Deposit not found", status: 404 })
         }
-        //create new chat
+        
         deposit.status = 'taken'
         deposit.agent = req.user._id
-        deposit.client = 
-        await controller.updateDeposit(id, deposit)
-        responser.success({ res, message: "Deposit attended successfully", body: deposit })
+        const responseDb = await controller.updateDeposit(id, deposit)
+        responser.success({ res, message: "Deposit attended successfully", body: responseDb })
     } catch (error) {
         responser.error({ res, message: error?.message || error })
     }
@@ -83,7 +82,7 @@ router.post('/', validateToken, async (req, res) => {
 
         //save the deposit to the database
         try {
-            const resDeposit = await controller.saveDeposit(deposit)
+            const resDeposit = await controller.saveDeposit(deposit, req.user, method)
             responser.success({ res, message: "Deposit created successfully", body: resDeposit })
         } catch (error) {
             console.error(error);

@@ -1,7 +1,9 @@
 import Deposit from './depositModel.js';
 import Chat from '../chats/model.js';
 import validate from '../../services/validate.js';
-const saveDeposit = async (deposit) => {
+import { io } from '../../index.js';
+
+const saveDeposit = async (deposit, userFrom, method) => {
     try {
 
         // Validate the deposit object
@@ -17,7 +19,15 @@ const saveDeposit = async (deposit) => {
 
 
         const newDeposit = new Deposit(deposit);
-        return await newDeposit.save();
+
+        const savedDeposit = await newDeposit.save();
+
+        const newData = { ...savedDeposit.toObject(), userFrom, method: method.methodId }
+
+        io.emit('newDeposit', newData);
+
+        console.log(newData)
+        return savedDeposit;
     } catch (error) {
         throw new Error(`Error al guardar el deposito: ${error.message}`);
     }
@@ -75,7 +85,13 @@ const updateDeposit = async (id, update) => {
             throw new Error('El deposito no existe');
         }
         Object.assign(deposit, update);
-        return await deposit.save();
+        const updatedDeposit = await deposit.save();
+        const enrichedDeposit = await Deposit.findById(updatedDeposit._id)
+            .populate('userFrom')
+            .populate('method')
+            .populate('tasa')
+        io.emit('updateDeposit', enrichedDeposit);
+        return enrichedDeposit;
     } catch (error) {
         throw new Error(`Error al actualizar el deposito: ${error.message}`);
     }
