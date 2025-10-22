@@ -2,6 +2,7 @@ import Deposit from './depositModel.js';
 import Chat from '../chats/model.js';
 import validate from '../../services/validate.js';
 import { io } from '../../index.js';
+import PaymentMethod from '../methods/methodsModel.js';
 
 const saveDeposit = async (deposit, userFrom, method) => {
     try {
@@ -26,7 +27,6 @@ const saveDeposit = async (deposit, userFrom, method) => {
 
         io.emit('newDeposit', newData);
 
-        console.log(newData)
         return savedDeposit;
     } catch (error) {
         throw new Error(`Error al guardar el deposito: ${error.message}`);
@@ -41,40 +41,76 @@ const getDeposits = async (filter) => {
     }
 }
 
-const getDeposit = async (filter) => {
+const getDeposit = async (_id) => {
     try {
-        const deposit = await Deposit.findOne(filter)
+
+        const deposit = await Deposit.findOne({ _id })
             .populate('userFrom')   // Cliente
             .populate('method')
             .populate('tasa')
+            .populate('agent')
             .exec();
 
+        const depositObj = deposit.toObject()
+
+        if (depositObj?.agent) {
+            console.log("si tiene agente");
+            const agentMethods = await PaymentMethod.find({ userId: depositObj.agent._id });
+            console.log("agentMethods: ", agentMethods);
+
+            // Convertir el documento a objeto plano
+
+            depositObj.agent.methods = agentMethods;
+            const agentId = depositObj.agent._id
+            const clientId = depositObj.userFrom._id
+            let chats = [];
 
 
-        if (!deposit || !deposit.userFrom) {
-            throw new Error('Depósito o usuario no encontrado');
-        }
-
-        const clientId = deposit.userFrom._id;
-        const agentId = deposit.agent;
-
-        let chats = [];
-
-        if (agentId) {
             chats = await Chat.find({
                 $or: [
-                    { from: clientId, to: agentId },
-                    { from: agentId, to: clientId }
+                    { from: clientId, depositId: depositObj._id, to: agentId },
+                    { from: agentId, depositId: depositObj._id, to: clientId }
                 ]
             }).sort({ createdAt: 1 }); // Orden cronológico
+
+
+            depositObj.chats = chats
+
+
+            return depositObj;
+        } else {
+            console.log("No tiene agente");
+            return deposit;
         }
 
-        return { ...deposit.toObject(), chats };
+        /* if (deposit?.agent) {
+            return deposit.agent.methods = await PaymentMethod.find({ userId: deposit.agent._id })
+        } else {
+            return deposit
+        } */
+
+        /* const clientId = deposit?.userFrom._id;
+        const agentId = deposit?.agent; */
+
+
+
+        //agregar el metodo de pago del agente a deposit.agent 
+        /* console.log("antes de buscar los metodos del agente: _id: ", deposit?.agent._id)
+        if (deposit?.agent?._id) {
+            const metodosDisponibles = await PaymentMethod.find({ userId: deposit.agent._id });
+            const agent = { ...deposit.toObject().agent, metodosDisponibles }
+            const newObj = { ...deposit.toObject(), agent }
+
+            console.log("retornamod deposito: ", newObj)
+            return { ...newObj, chats };
+        } else {
+            return { ...deposit.toObject(), chats };
+        } */
+
     } catch (error) {
         throw new Error(`Error al obtener el depósito: ${error.message}`);
     }
 }
-
 
 const updateDeposit = async (id, update) => {
     try {
@@ -90,8 +126,17 @@ const updateDeposit = async (id, update) => {
             .populate('userFrom')
             .populate('method')
             .populate('tasa')
-        io.emit('updateDeposit', enrichedDeposit);
-        return enrichedDeposit;
+            .populate('agent');
+
+        const depositObject = enrichedDeposit.toObject();
+
+        if (depositObject?.agent?._id) {
+            const metodosDisponibles = await PaymentMethod.find({ userId: depositObject.agent._id });
+            depositObject.agent.methods = metodosDisponibles;
+        }
+
+        io.emit('updateDeposit', depositObject);
+        return depositObject;
     } catch (error) {
         throw new Error(`Error al actualizar el deposito: ${error.message}`);
     }

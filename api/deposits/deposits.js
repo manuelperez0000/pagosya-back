@@ -19,7 +19,9 @@ router.get('/client/:id', validateToken, async (req, res) => {
     //get a deposit by id
     try {
         const { id } = req.params
-        const deposit = await controller.getDeposit({ _id: id})
+        const deposit = await controller.getDeposit(id)
+        console.log("ver si deposit tiene agent con los metodos: ", deposit)
+
         responser.success({ res, message: "Deposit retrieved successfully", body: deposit })
     } catch (error) {
         responser.error({ res, message: error?.message || error })
@@ -45,10 +47,12 @@ router.put('/attend/:id', validateToken, async (req, res) => {
         if (!deposit) {
             return responser.error({ res, message: "Deposit not found", status: 404 })
         }
-        
+
         deposit.status = 'taken'
         deposit.agent = req.user._id
+        console.log("agent: ", deposit.agent)
         const responseDb = await controller.updateDeposit(id, deposit)
+
         responser.success({ res, message: "Deposit attended successfully", body: responseDb })
     } catch (error) {
         responser.error({ res, message: error?.message || error })
@@ -89,6 +93,16 @@ router.post('/', validateToken, async (req, res) => {
             responser.error({ res, message: "Error al crear el deposito", status: 400, body: deposit })
         }
 
+    } catch (error) {
+        responser.error({ res, message: error?.message || error })
+    }
+})
+
+router.post('/operation-number', validateToken, async (req, res) => {
+    try {
+        const { depositId, operationNumber } = req.body
+        const updatedDeposit = await controller.updateDeposit(depositId, { operationNumber })
+        responser.success({ res, message: "Operation number added successfully", body: updatedDeposit })
     } catch (error) {
         responser.error({ res, message: error?.message || error })
     }

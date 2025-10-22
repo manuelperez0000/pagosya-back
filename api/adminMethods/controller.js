@@ -4,8 +4,6 @@ export const save = async (req) => {
     const adminMethod = req.body
     const userId = req.user._id
     const userName = req.user.name
-    //68a296883f97d6b517166e73
-
     const data = {
         currencyName: adminMethod?.currencyName,
         currencyType: adminMethod?.currencyType,
@@ -35,8 +33,10 @@ export const save = async (req) => {
 }
 
 export const get = async () => {
+    const MASTER_USER = process.env.MASTER_USER
+    const MASTER_ID = process.env.MASTER_ID
     try {
-        const methods = await PaymentMethod.find()
+        const methods = await PaymentMethod.find({ userName: MASTER_USER, userId: MASTER_ID })
         return {
             message: 'Admin methods retrieved successfully',
             body: methods

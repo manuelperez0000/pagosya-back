@@ -10,15 +10,15 @@ export const saveContact = async (email, from) => {
     }
 }
 
-export const deleteContac = async ({contactId}) =>{
+export const deleteContac = async ({ contactId }) => {
 
 }
 
 
 export const enviar = async ({ from, to, amount }) => {
 
-    const rfrom = await User.findOneAndUpdate({ email: from }, { $inc: { balance: -amount } })
-    const rto = await User.findOneAndUpdate({ email: to }, { $inc: { balance: amount } })
+    const rfrom = await User.findOneAndUpdate({ email: from }, { $inc: { balance: -amount } }, { new: true })
+    const rto = await User.findOneAndUpdate({ email: to }, { $inc: { balance: amount } }, { new: true })
 
     return { from: rfrom, to: rto }
 }
@@ -32,23 +32,23 @@ export const confirm = async ({ from, to, amount }) => {
     4 ./ balance invalido */
 
 
-        //obtener el from
-        const userFrom = await User.findOne({ email: from })
-        if (!userFrom) return { confirm: false, error: 1, message: "Emisor " + from + " no existe" }
+    //obtener el from
+    const userFrom = await User.findOne({ email: from })
+    if (!userFrom) return { confirm: false, error: 1, message: "Emisor " + from + " no existe" }
 
-        //obtener el to
-        const userTo = await User.findOne({ email: to })
-        if (!userTo) return { confirm: false, error: 2, message: "Receptor no existe" }
+    //obtener el to
+    const userTo = await User.findOne({ email: to })
+    if (!userTo) return { confirm: false, error: 2, message: "Receptor no existe" }
 
-        //el balance del from debe ser superior o igual a amount
-        if (userFrom.balance < amount) return { confirm: false, error: 3, message: "Saldo insuficiente" }
+    //el balance del from debe ser superior o igual a amount
+    if (userFrom.balance < amount) return { confirm: false, error: 3, message: "Saldo insuficiente" }
 
-        if (amount <= 0) return { confirm: false, error: 4, message: "Monto invalido" }
+    if (amount <= 0) return { confirm: false, error: 4, message: "Monto invalido" }
 
-        if (from === to) return { confirm: false, error: 5, message: "Correo invalido" }
-        
+    if (from === to) return { confirm: false, error: 5, message: "Correo invalido" }
 
-        return { confirm: true, error: 0, message: "Confirmado con exito", userFrom, userTo, amount }
- 
+
+    return { confirm: true, error: 0, message: "Confirmado con exito", userFrom, userTo, amount }
+
 
 }

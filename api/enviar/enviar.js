@@ -3,10 +3,9 @@ import responser from '../../network/response.js'
 import validateToken from '../../midelwares/validateToken.js'
 import { enviar, confirm, saveContact } from './controller.js'
 import validate from '../../services/validate.js'
-
+import { io } from '../../index.js';
 import { saveTransaction } from '../transactions/transactionController.js' //el problema
 import { getUserIdFromEmail } from '../user/store/controller.js'
-
 
 const router = express.Router()
 
@@ -27,6 +26,9 @@ router.post('/', validateToken, async (req, res) => {
         if (checked) saveContact(to, from)
 
         if (response.from && response.to) {
+
+            io.emit('userData', response)
+
             responser.success({ res, message: "Enviado con exito", body: { from, to, amount, info: response, status: true } })
         } else {
             throw 'Error al realizar el envio'
@@ -42,9 +44,9 @@ router.post('/confirm', validateToken, async (req, res) => {
     try {
         const { to, amount } = req.body
 
-        validate.required([to,amount])
-        validate.number(amount,"Monto invalido")
-        validate.email(to,"formato de correo invalido")
+        validate.required([to, amount])
+        validate.number(amount, "Monto invalido")
+        validate.email(to, "formato de correo invalido")
 
         const from = req.user.email
 
@@ -56,7 +58,7 @@ router.post('/confirm', validateToken, async (req, res) => {
             responser.success({ res, message, body: response })
             return
         } else {
-            responser.error({ res, message, status:400, body: response })
+            responser.error({ res, message, status: 400, body: response })
             return
         }
 

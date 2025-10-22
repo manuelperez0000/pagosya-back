@@ -4,7 +4,7 @@ import onlySuperAdmin from '../../midelwares/onlySuperAdmin.js'
 import { save, get, remove } from './controller.js'
 const router = express.Router()
 
-router.post('/', onlySuperAdmin, async (req, res) => {
+router.post('/saveAdminMethod', onlySuperAdmin, async (req, res) => {
 
     try {
         const stored = await save(req)
