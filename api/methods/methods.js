@@ -34,18 +34,18 @@ router.post('/', validateToken, async (req, res) => {
         const reqBody = req.body
 
         const objToSave = {
+            userId: req.user._id,
             currencyName: method.currencyName,
             currencyType: method.currencyType,
             abbreviation: method.abbreviation,
-            userId: req.user._id,
             methodId: method.methodId,
-            email: reqBody.email,
-            phone: reqBody.phone,
-            accountNumber: reqBody.accountNumber,
-            document: reqBody.document,
-            bank: reqBody.bank,
-            userName: reqBody.nombre,
-            accountType: reqBody.tipoCuenta
+            email: reqBody?.email || null,
+            phone: reqBody?.phone || null,
+            accountNumber: reqBody?.accountNumber || null,
+            document: reqBody?.document || null,
+            bank: reqBody?.bank || null,
+            userName: reqBody?.nombre || null,
+            accountType: reqBody?.tipoCuenta || null
         }
 
         console.log("objToSave: ", objToSave)

@@ -21,14 +21,14 @@ router.post('/', validateToken, async (req, res) => {
         const agentId = deposit.agent;
 
         // Agregar saldo al cliente
-        await User.findOneAndUpdate(
+        const updatedClient = await User.findOneAndUpdate(
             { _id: clientId },
             { $inc: { balance: deposit.result } },
             { new: true }
         );
 
         // Disminuir saldo al agente
-        await User.findOneAndUpdate(
+        const updatedAgent = await User.findOneAndUpdate(
             { _id: agentId },
             { $inc: { balance: -deposit.result } },
             { new: true }
@@ -47,7 +47,10 @@ router.post('/', validateToken, async (req, res) => {
         const newObjDeposit = responseDepositUpdate.toObject()
         newObjDeposit.agent.methods = await PaymentMethod.find({ userId: deposit.agent });
 
+        const usersData = { from: updatedClient, to: updatedAgent }
+
         io.emit('updateDeposit', newObjDeposit);
+        io.emit('userData', usersData);
 
 
 

@@ -1,0 +1,112 @@
+{
+  "Chat": {
+    "collection": "chats",
+    "fields": {
+      "from": { "type": "ObjectId", "ref": "User", "required": true },
+      "to": { "type": "ObjectId", "ref": "User", "required": true },
+      "message": { "type": "String", "required": true },
+      "depositId": { "type": "String", "required": true }
+    },
+    "timestamps": true,
+    "notes": "Mensajes entre usuarios; referencias a User. depositId es un string que apunta a un id externo de depósito."
+  },
+  "Tasa": {
+    "collection": "tasas",
+    "fields": {
+      "methodId": { "type": "ObjectId", "ref": "PaymentMethod", "required": true },
+      "name": { "type": "String", "required": true },
+      "buy": { "type": "Number", "required": true },
+      "sell": { "type": "Number", "required": true }
+    },
+    "timestamps": true,
+    "notes": "Tipo de tasa/cotización asociada a un método de pago."
+  },
+  "Retirar": {
+    "collection": "retirars",
+    "fields": {
+      "userFrom": { "type": "ObjectId", "ref": "User", "required": true },
+      "agent": { "type": "ObjectId", "ref": "User", "required": false },
+      "method": { "type": "ObjectId", "ref": "PaymentMethod", "required": true },
+      "tasa": { "type": "ObjectId", "ref": "Tasa", "required": true },
+      "amount": { "type": "Number", "required": true },
+      "result": { "type": "Number", "required": true },
+      "status": { "type": "String", "default": "pending", "enum": ["pending", "taken", "canceled", "finished"] },
+      "description": { "type": "String", "required": false },
+      "operationNumber": { "type": "String", "required": false }
+    },
+    "timestamps": true,
+    "notes": "Registro de solicitudes de retiro. status tiene enum y default. agent es opcional."
+  },
+  "PaymentMethod": {
+    "collection": "methods",
+    "fields": {
+      "currencyName": { "type": "String", "required": true, "trim": true },
+      "currencyType": { "type": "String", "required": true, "enum": ["fiat", "crypto"] },
+      "abbreviation": { "type": "String", "required": true, "uppercase": true, "trim": true, "maxlength": 20 },
+      "userId": { "type": "ObjectId", "required": true },
+      "methodId": { "type": "Number", "required": true },
+      "accountType": { "type": "String", "required": false, "enum": ["ahorro", "corriente"] },
+      "userName": { "type": "String", "required": false },
+      "phone": { "type": "String", "required": false },
+      "accountNumber": { "type": "String", "required": false },
+      "document": { "type": "Number", "required": false },
+      "bank": { "type": "String", "required": false },
+      "email": { "type": "String", "required": false }
+    },
+    "timestamps": true,
+    "notes": "Métodos de pago por usuario, puede ser fiat o crypto. userId es el dueño."
+  },
+  "User": {
+    "collection": "users",
+    "fields": {
+      "ci": { "type": "Number", "unique": true, "required": true },
+      "name": { "type": "String", "required": true },
+      "email": { "type": "String", "unique": true, "required": true },
+      "phone": { "type": "String", "required": true },
+      "password": { "type": "String", "required": true, "note": "hashed via pre-save hook using bcrypt" },
+      "level": { "type": "Number", "default": 3 },
+      "balance": { "type": "Number", "default": 0 },
+      "block": { "type": "Boolean", "default": false }
+    },
+    "timestamps": true,
+    "notes": "El hook pre-save encripta la contraseña; el método toJSON elimina password al serializar."
+  },
+  "Contacts": {
+    "collection": "contacts",
+    "fields": {
+      "name": { "type": "String", "required": true },
+      "email": { "type": "String", "required": true },
+      "from": { "type": "String", "required": true }
+    },
+    "timestamps": true,
+    "notes": "Contactos vinculados a la funcionalidad enviar."
+  },
+  "Deposit": {
+    "collection": "deposits",
+    "fields": {
+      "userFrom": { "type": "ObjectId", "ref": "User", "required": true },
+      "agent": { "type": "ObjectId", "ref": "User", "required": false },
+      "method": { "type": "ObjectId", "ref": "PaymentMethod", "required": true },
+      "tasa": { "type": "ObjectId", "ref": "Tasa", "required": true },
+      "amount": { "type": "Number", "required": true },
+      "result": { "type": "Number", "required": true },
+      "status": { "type": "String", "default": "pending", "enum": ["pending", "taken", "canceled", "finished"] },
+      "description": { "type": "String", "required": false },
+      "operationNumber": { "type": "String", "required": false, "default": "" }
+    },
+    "timestamps": true,
+    "notes": "Registro de depósitos; esquema muy similar a Retirar."
+  },
+  "TransactionModel": {
+    "collection": "transactions",
+    "fields": {
+      "fromId": { "type": "ObjectId", "required": true },
+      "toId": { "type": "ObjectId", "required": true },
+      "fromEmail": { "type": "String", "required": true },
+      "toEmail": { "type": "String", "required": true },
+      "amount": { "type": "Number", "required": true }
+    },
+    "timestamps": true,
+    "notes": "Transacciones entre usuarios. Los campos fromId y toId son objectId."
+  }
+}
