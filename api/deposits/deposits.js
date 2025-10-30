@@ -4,6 +4,16 @@ import validateToken from '../../midelwares/validateToken.js'
 import controller from './controller.js'
 const router = express.Router()
 
+router.get('/', validateToken, async (req, res) => {
+    //get all deposits
+    try {
+        const deposits = await controller.getDepositsAgent({ agentId: req.user._id });
+        responser.success({ res, message: "Deposits retrieved successfully", body: deposits });
+    } catch (error) {
+        responser.error({ res, message: error?.message || error });
+    }
+});
+
 router.get('/client', validateToken, async (req, res) => {
     //get all deposits of the user
     try {

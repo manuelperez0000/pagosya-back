@@ -15,6 +15,8 @@ import adminMethods from './api/adminMethods/adminMethods.js'
 import chats from './api/chats/chats.js'
 import releaseMoney from './api/releaseMoney/releaseMoney.js'
 import retirar from './api/retirar/retirar.js'
+import withdrawals from './api/withdrawals/withdrawals.js'
+
 const route = express.Router();
 
 const router = (app) => {
@@ -32,6 +34,7 @@ const router = (app) => {
     route.use('/deposit', deposit);
     route.use('/perfil', perfil);
     route.use('/withdrawal',retirar)
+    route.use('/withdrawals',withdrawals)
 
     route.use('/tasas', tasas);
     route.use('/users', users);

@@ -4,6 +4,20 @@ import validate from '../../services/validate.js';
 import { io } from '../../index.js';
 import PaymentMethod from '../methods/methodsModel.js';
 
+const getDepositsAgent = async ({ agentId }) => {
+    try {
+        return await Deposit.find({ $or: [{ agent: agentId }, { status: 'pending' }] })
+        .populate('userFrom')
+        .populate('method')
+        .populate('tasa')
+        .populate('agent')
+        .exec();
+        
+    } catch (error) {
+        throw new Error(`Error al obtener los depositos del agente: ${error.message}`);
+    }
+}
+
 const saveDeposit = async (deposit, userFrom, method) => {
     try {
 
@@ -142,4 +156,4 @@ const updateDeposit = async (id, update) => {
     }
 }
 
-export default { saveDeposit, getDeposits, updateDeposit, getDeposit }
+export default { saveDeposit, getDepositsAgent, getDeposits, updateDeposit, getDeposit }
